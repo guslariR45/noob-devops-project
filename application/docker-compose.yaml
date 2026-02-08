@@ -1,7 +1,7 @@
 services:
   application:
     build: .
-    image: app-image
+    image: mikikg45/test-provera:latest
     working_dir: /application
     command: python application.py
   time_checker:
