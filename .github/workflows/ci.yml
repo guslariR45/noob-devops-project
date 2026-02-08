@@ -39,14 +39,11 @@ jobs:
     steps:
       - name: Checkout code na Vagrant
         uses: actions/checkout@v4  # Download code on the Vagrant server as well, if needed
-
+        
       - name: Pull and Restart
         run: |
-          # First, login to Docker Hub on the Vagrant server
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          
-          # Pull the latest image from Docker Hub
-          docker pull ${{ secrets.DOCKER_USERNAME }}/test-provera:latest
-          
-          # Use Docker Compose to bring up the application with the new image
+          # Dodaj cd u folder gde je zapravo docker-compose.yaml
+          cd application 
+          docker compose pull
           docker compose up -d
