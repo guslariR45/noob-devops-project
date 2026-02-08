@@ -31,3 +31,22 @@ jobs:
         run: |
           docker compose -f ./application/docker-compose.yaml config
           echo "Docker Compose file is valid!"
+
+  deploy:
+    runs-on: self-hosted    # This is Vagrant server where you want to deploy
+    needs: build            # Deploy job will run only after the build job is successful
+    
+    steps:
+      - name: Checkout code na Vagrant
+        uses: actions/checkout@v4  # Download code on the Vagrant server as well, if needed
+
+      - name: Pull and Restart
+        run: |
+          # First, login to Docker Hub on the Vagrant server
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          
+          # Pull the latest image from Docker Hub
+          docker pull ${{ secrets.DOCKER_USERNAME }}/test-provera:latest
+          
+          # Use Docker Compose to bring up the application with the new image
+          docker compose up -d
