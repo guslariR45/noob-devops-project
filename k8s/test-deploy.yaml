@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moj-projekat
+spec:
+  replicas: 4          # Added 4 replicas for better load distribution
+  selector:
+    matchLabels:
+      app: test-app
+  template:
+    metadata:
+      labels:
+        app: test-app
+    spec:
+      containers:
+      - name: moj-kontejner
+        image: mikikg45/test-provera:latest
+        # Added a simple command to keep the container running, since the original command is not specified
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do sleep 30; done"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: moj-servis
+spec:
+  type: NodePort
+  selector:
+    app: test-app      # Here we select the pods with the label "app: test-app" to be part of this service
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30007  # Fixed nodePort to a specific value for easier access, you can change it if needed
