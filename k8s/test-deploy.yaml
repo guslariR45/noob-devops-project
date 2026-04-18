@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: moj-projekat
+  namespace: default
 spec:
   replicas: 4          # Added 4 replicas for better load distribution
   selector:
@@ -32,6 +33,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: moj-servis
+  namespace: default
 spec:
   type: NodePort
   selector:
