@@ -4,7 +4,7 @@ metadata:
   name: moj-projekat
   namespace: default
 spec:
-  replicas: 4          # Added 4 replicas for better load distribution
+  replicas: 2          # Added 4 replicas for better load distribution
   selector:
     matchLabels:
       app: test-app
