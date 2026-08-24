@@ -4,7 +4,7 @@ metadata:
   name: moj-projekat
   namespace: default
 spec:
-  replicas: 2          # Added 4 replicas for better load distribution
+  replicas: 2
   selector:
     matchLabels:
       app: test-app
@@ -16,9 +16,9 @@ spec:
       containers:
       - name: moj-kontejner
         image: mikikg45/test-provera:latest
-        # Added a simple command to keep the container running, since the original command is not specified
-        command: ["/bin/sh"]
-        args: ["-c", "while true; do sleep 30; done"]
+        command: ["python", "server.py"]
+        ports:
+        - containerPort: 80
         resources:
           requests:
             memory: "64Mi"
