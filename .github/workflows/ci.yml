@@ -19,7 +19,9 @@ jobs:
 
       - name: Set image tag
         id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+        run: |
+          BRANCH=$(echo "${{ github.ref_name }}" | tr '/' '-')
+          echo "image_tag=${BRANCH}-$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Login to Docker Hub
         if: github.event_name == 'push'
@@ -33,7 +35,7 @@ jobs:
         with:
           context: ./application
           push: ${{ github.event_name == 'push' }}
-          tags: ${{ secrets.DOCKER_USERNAME }}/test-provera:${{ steps.vars.outputs.sha_short }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/test-provera:${{ steps.vars.outputs.image_tag }}
 
       - name: Verify Docker Compose
         run: |
@@ -45,7 +47,7 @@ jobs:
       - name: Update k8s manifest with new image tag
         if: github.event_name == 'push'
         run: |
-          sed -i "s|image: .*test-provera:.*|image: ${{ secrets.DOCKER_USERNAME }}/test-provera:${{ steps.vars.outputs.sha_short }}|" k8s/test-deploy.yaml
+          sed -i "s|image: .*test-provera:.*|image: ${{ secrets.DOCKER_USERNAME }}/test-provera:${{ steps.vars.outputs.image_tag }}|" k8s/test-deploy.yaml
 
       - name: Commit and push updated manifest
         if: github.event_name == 'push'
@@ -56,6 +58,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore: bump image tag to ${{ steps.vars.outputs.sha_short }} [skip ci]"
+            git commit -m "chore: bump image tag to ${{ steps.vars.outputs.image_tag }} [skip ci]"
             git push
           fi
