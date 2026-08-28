@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: moj-kontejner
-        image: mikikg45/test-provera:b0efa64
+        image: mikikg45/test-provera:main-0d1d76b
         command: ["python", "server.py"]
         ports:
         - containerPort: 80
