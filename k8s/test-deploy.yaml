@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: moj-kontejner
-        image: mikikg45/test-provera:fix-add-description-64d48de
+        image: mikikg45/test-provera:feat-terraform-upate-7da1fe7
         command: ["python", "server.py"]
         ports:
         - containerPort: 80
