@@ -20,7 +20,13 @@ jobs:
       - name: Set image tag
         id: vars
         run: |
-          BRANCH=$(echo "${{ github.ref_name }}" | tr '/' '-')
+          MERGE_MSG=$(git log -1 --format=%s)
+          if echo "$MERGE_MSG" | grep -qE '^Merge pull request #[0-9]+ from '; then
+            # Extract the source branch from GitHub's default merge commit message
+            BRANCH=$(echo "$MERGE_MSG" | sed -E 's|^Merge pull request #[0-9]+ from [^/]+/||' | tr '/' '-')
+          else
+            BRANCH=$(echo "${{ github.ref_name }}" | tr '/' '-')
+          fi
           echo "image_tag=${BRANCH}-$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Login to Docker Hub
