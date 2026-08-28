@@ -1,0 +1,37 @@
+name: Validate Commit Message Format
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  commit-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Commit Messages
+        run: |
+          REGEX="^(fix|feat)(\([a-z0-9-]+\))?: .+ [A-Z]+-[0-9]+$"
+          
+          # Iterate over commits in current push / PR
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="origin/${{ github.base_ref }}"
+            HEAD="${{ github.sha }}"
+            COMMITS=$(git log --format="%s" $BASE..$HEAD)
+          else
+            COMMITS=$(git log -1 --format="%s")
+          fi
+
+          echo "$COMMITS" | while IFS= read -r msg; do
+            if ! echo "$msg" | grep -qE "$REGEX"; then
+              echo "::error::Invalid commit message format: '$msg'"
+              echo "::error::Must match pattern: 'fix/feat: <message> <JIRA-KEY>' (e.g., 'feat: add user auth PROJ-123')"
+              exit 1
+            fi
+          done
