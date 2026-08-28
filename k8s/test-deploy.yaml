@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: moj-kontejner
-        image: mikikg45/test-provera:main-0d1d76b
+        image: mikikg45/test-provera:feat-argocd-gitops-deploy-fda3e12
         command: ["python", "server.py"]
         ports:
         - containerPort: 80
