@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: moj-kontejner
-        image: mikikg45/test-provera:feat-terraform-upate-7da1fe7
+        image: mikikg45/test-provera:feat-add-members-to-teams-2b9c229
         command: ["python", "server.py"]
         ports:
         - containerPort: 80
