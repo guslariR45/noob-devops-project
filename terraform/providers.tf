@@ -5,4 +5,12 @@ terraform {
       version = "~> 6.0"
     }
   }
+
+  cloud {
+    organization = "guslariR45"
+
+    workspaces {
+      name = "noob-devops-project-teams"
+    }
+  }
 }
